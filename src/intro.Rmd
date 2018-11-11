@@ -1,0 +1,16 @@
+---
+title: "Introduction to meta-analysis"
+author: "Steve Simon"
+date: "11/11/2018"
+output: powerpoint_presentation
+---
+
+## Abstract
+
+Meta-analysis is the quantitative pooling of data from multiple studies. The three threats to the validity of a meta-analytic finding are heterogeneity, publication bias, and poor individual study quality. This talk will introduce you to the major design issues that you must address in your research protocol to insure that your meta-analysis will have credibility. You will also learn some of the fundamental graphical and analytic tools used in meta-analysis: the forest plot, Cochran’s Q and I-squared, the funnel plot, and the L’Abbe plot. You will compare the results from a fixed effects and a random effects model and understand the choices available for summary statistics. Finally, you will see how to publish your results using the PRISMA guidelines.
+
+<div class="notes">
+
+Today's talk is a basic introduction. It will focus on design issues for a meta-analytic study, some of the common statistics and graphics used in a meta-analytic study, and publication standards for a meta-analytic study.
+
+</div>
