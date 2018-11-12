@@ -44,6 +44,53 @@ For example, a linear regression model on the pooled data provided an estimated 
 
 </div>
 
+## Alternative analysis
+
+![Alternative display of semen studies](../images/semen_graph_alternative.png)
+
+<div class="notes">
+
+Several researchers (Olsen 1995; Fisch 1996) noted heterogeneity in this meta-analysis, a mixing of apples and oranges. Studies before 1970 were dominated by studies in the United States and particularly studies in New York. Studies after 1970 included many other locations including third world countries. 
+
+</div>
+
+## Additional sources of variation
+
+* The source of patients
+  + Sperm donor clinics,
+  + Fertility work-ups
+  + In vitro fertilization clinics
+* Request for minimum abstinence time.
+* Tobacco and marijauna use
+
+<div class="notes">
+
+There was also substantial variation from study to study in the source of patients. Sperm donor clinics typically ask donors to prove they are fertile (e.g., having fathered at least two children). A fertility work-up, on the other hand, is done in settings where fertility is questionable, and would not require such a condition. An in vitro clinic might have men with normal fertility, if the issue of infertility were restricted to the female side. But often a poor sperm count is a contributing factor to female infertility.
+
+Another thing that varied from study to study were absitinence requirements. Some studies asked the men to abstain from sex for two days prior to providing a sample and some didn't. Abstinent men would tend to have higher sperm counts than non-abstinent men.
+
+If patients who used tobacco or marijuana were excluded from some studies, but not from others, this could also affect sperm counts. 
+
+</div>
+
+## Illustration of strengths and weaknesses of meta-analysis
+
+* Weakness
+
+  + Mixing North American apples with third world oranges.
+  
+* Strengths
+
+  + Objective process.
+  
+  + Ability to re-analyze.
+
+<div class="notes">
+
+This meta-analysis and the subsequent criticisms illustrate, at the same time, the greatest weakness and the greatest strength of meta-analysis.
+
+</div>
+
 ## Apples and oranges
 
 Here are the main threats to the validity of a meta-analysis:
@@ -56,7 +103,310 @@ Here are the main threats to the validity of a meta-analysis:
 
 * Were all of the apples rotten? (poor study quality)
 
+<div class="notes">
+
+One of the seven habits of Steven Covey is "Begin with the end in mind." If you read the criticisms of meta-analysis, they tend to fall into four broad categories. You should design your study and analyze it keeping these criticisms in mind. You want to minimize the number of objections to your work.
+
+</div>
+
 ## Did you mix apples and oranges?
 
 Meta-analysis: a multi-center clinical trial where each center uses a different protocol.
+
+How do clinical trials differ?
+
+* How the patient population was selected.
+
+* How the intervention was administered.
+
+* How the controls were selected/treated.
+
+* How the effectiveness of the intervention was measured.
+
+<div class="notes">
+
+There are many ways that one clinical trial can differ from another. One might study a severely ill group of patients and another might study a mildly ill group. The intervention studied could vary in the frequency and duration of the intervention. The controls could be given a placebo or the best available alternative. The outcome used to measure the intervention could be something as severe and final as death or it could be a surrogate marker (e.g., CD4 cell counts in an AIDS trial).
+
+A little bit of heterogeneity is actually quite good. If a new therapy is shown to be effective across a range of patient populations using a variety of different outcomes, you have a robust result. Mixing apples and oranges is okay, it gives you fruit salad. But you're not supposed to mix apples and onions.
+
+</div>
+
+## You can examine heterogeneity using
+
+* the forest plot
+
+* L'Abbe plot
+
+* Cochran's Q
+
+* I-squared
+
+* sensitivity/subgroup analysis
+
+* meta regression
+
+<div class="notes">
+
+You can assess how much heterogeneity there is among your studies using graphical approaches, such as the forest plot and the L'Abbe plot, with numerical measures like Cochran's Q or I-squared, or through sensitivity and subgroup analyses or through meta regression.
+
+You'll see how to calculate these quantities in just a bit.
+
+</div>
+
+## Did you leave some apples on the tree?
+
+Publication bias is difficult to assess and difficult to control for. You should
+
+* have a comprehensive search protocol
+
+  + non-Medline indexed journals
+  
+  + conference presentations
+  
+  + clinical trial registries 
+
+* assess publication bias using a funnel plot.
+
+<div class="notes">
+
+It is very important to try to get every study conducted in the area you're studying. Unpublished results and more likely to have negative results. It was originally thought to be because journals would preferentially publish only positive studies, but there is some evidence that authors self-censor the negative studies, especially negative studies with small sample sizes.
+
+You need to try hard to find studies that are hard to find.
+
+The funnel plot is a graphical method commonly used to identify whether publication bias has occured. We'll talk about it in a bit.
+
+</div>
+
+## Did the pile of apples amount to more than just a hill of beans?
+
+Very few meta-analytic studies address practical significance
+
+* Summary measures in meta-analysis are unitless.
+
+* Translate your findings to a meaningful scale.
+
+<div class="notes">
+
+A neglected issue in meta-analysis is the practical interpretation of the results. You need to assess more than just the overall statistical significance of your meta-analysis. You need to consider the scientific or practical significance as well. 
+
+The unitless quantities often used in meta-analysis make assessment of practical significance difficult. We'll address that issue in more detail in just a little bit.
+
+</div>
+
+## Were all of the apples rotten?
+
+Meta-analysis cannot "make a silk purse out of a sow's ear"
+
+Quality scores
+
+* Jadad
+
+* PEDro
+
+<div class="notes">
+
+Meta-analysis cannot remove the biases and imprecision associated with poor research methodologies. If all of the studies have "issues" then a meta-analysis will amplify those issues.
+
+You can assess quality issues by limiting studies based on scoring systems like Jadad or PEDro or by weighting studies based on these scores. We'll talk about this a bit later.
+
+</div>
+
+## Design of a meta-analytic study
+
+Detailed protocol
+
+* Search strategy
+
+* Inclusion/exclusion criteria
+
+* Process for extracting numerical results
+
+<div class="notes">
+
+A detailed protocol is a must for meta-analysis. You have to provide a level of detail comparable to a clinical trial. Your protocol should address your search strategy, your inclusion and exclusion criteria, and your process for extracting information from each trial.
+
+</div>
+
+## Search strategy
+
+## Inclusion/exclusion criteria
+
+## Process for extracting numerical results
+
+## Data preparation
+
+Continuous data
+
+Catetgorical data
+
+## Data analysis
+
+* Forest plot,
+
+* Cochran’s Q and I-squared,
+
+* Funnel plot
+
+* L’Abbe plot.
+
+* Fixed versus random effects
+
+* Meta regression
+
+<div class="notes">
+
+Let's talk about data analysis. This talk will cover several different statistical measures and several different plots. You'll also see controversies about fixed versus random effects analysis.
+
+</div>
+
+## BCG description
+
+"Results from 13 studies examining the effectiveness of the Bacillus Calmette-Guerin (BCG) vaccine against tuberculosis."
+
+Available at https://rdrr.io/cran/metafor/man/dat.colditz1994.html
+
+```{r prelims, echo=FALSE}
+library(knitr)
+opts_chunk$set(echo=FALSE, fig.width=4.5, fig.height=2.5)
+library(magrittr)
+suppressMessages(suppressWarnings(library(metafor)))
+bcg <- get(data(dat.bcg))
+los <- get(data(dat.normand1999))
+```
+
+## BCG data, first three columns
+
+```{r bcg-list1}
+bcg[1:6, c("trial", "author", "year")]
+```
+
+## BCG data, last six columns
+
+```{r bcg-list2}
+bcg[1:6, c("tpos", "tneg", "cpos", "cneg", "ablat", "alloc")]
+```
+
+## LOS description
+
+Results from 9 studies on the length of the hospital stay of stroke patients under specialized care and under conventional/routine (non-specialist) care.
+
+## LOS data, first two columns
+
+```{r los-list-1}
+los[1:6, c("study", "source")]
+```
+
+## LOS data, last six columns
+
+```{r los-list-2}
+los[1:6, c("n1i", "m1i", "sd1i", "n2i", "m2i", "sd2i")]
+```
+
+## The standardized mean difference (SMD)
+
+For a continuous outcome, the standardized mean difference is computed as 
+
+$\frac{\bar{X}_T-\bar{X}_C}{Estimated\;Standard\;Deviation}$
+
+or equivalently
+
+$\frac{\bar{X}_C-\bar{X}_T}{Estimated\;Standard\;Deviation}$
+
+Different estimated standard deviations
+
+* Cohen's d (pooled standard deviation)
+
+* Hedge's g (bias correction)
+
+* Adjustments for heterogeneity and pairing
+
+<div class="notes">
+
+For continuous outcomes, the most common summary measure is the standardized mean difference. It is the difference in means divided by an estimate of the standard deviation (not the standard error) of an individual patient.
+
+Which way do you subtract? It depends on whether a large value is good or a small value is good. The Cochrane Collaboration suggests subtracting in such a way that negative values suggest that the new treatment is better and positive values suggest that the control treatment is better.
+
+There are several ways to estimate the standard deviation.
+
+</div>
+
+## Cohen's d
+
+Uses a pooled standard deviation.
+
+$S_p=\sqrt{\frac{n_TS_T^2+n_CS_C^2}{n_T+n_C}}$
+
+<div class="notes">
+
+The simplest standardized mean difference is Cohen's d. This is the famous Jacob Cohen who wrote "Statistical Power Analysis for the Behavioral Sciences" back in 1977 and invented to concept of effect size.
+
+Cohen's d uses a pooled standard deviation in the denominator.
+
+</div>
+
+## Hedge's g
+
+Pooled standard deviation adjusted by a bias correction factor
+
+$J \approx 1-\frac{3}{4df-1}$
+
+If there is heterogeneity within a study, you can use an the standard Satterthwaite alternative, but some researchers will use the control standard deviation.
+
+<div class="notes">
+
+Hedge's g multiples the pooled standard deviation by a bias correction factor. The exact form of the correction factor is messy, so sometimes an approximate formula based on the pooled degrees of freedom is used in its place.
+
+Both the exact and the approximate bias adjustment formulas are less than one, making Hedge's g smaller than Cohen's d. But for large sample sizes, this adjustment becomes trivial.
+
+</div>
+
+## 
+
+## Effect sizes
+
+```{r escalc}
+res <- escalc(measure="MD", m1i=m1i, sd1i=sd1i, n1i=n1i, m2i=m2i, sd2i=sd2i, n2i=n2i, data=los)
+res
+```
+
+## Random effect
+
+```{r rma}
+res <- rma(
+  measure="SMD", 
+  m1i=m1i, sd1i=sd1i, n1i=n1i, 
+  m2i=m2i, sd2i=sd2i, n2i=n2i, 
+  data=los, slab=source)
+res
+```
+
+## Forest plot
+
+```{r forest}
+forest(res, xlim=c(-7, 5), alim=c(-3, 1), cex=0.8)
+text(-7, 11, "Study/Source",          pos=4, cex=.8)
+text( 5, 11, "Observed SMD [95% CI]", pos=2, cex=.8)
+```
+
+## Cochran's Q and I-squared
+
+## Funnel plot
+
+## L'Abbe plot
+
+## Fixed versus random analysis
+
+## Meta regression
+
+## Publication guidelines
+
+* PRISMA
+
+  + Preferred Reporting Items for Systematic Reviews and Meta-Analyses
+
+* QUOROM
+
+  + QUality Of Reporting Of Meta-analysis
+
+## Conclusion
 
