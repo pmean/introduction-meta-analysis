@@ -488,7 +488,9 @@ bcg_or[1:6, c("tpos", "tneg", "cpos", "cneg", "yi", "vi")]
 
 ## Fixed effects model
 
- $V(\hat \theta_i) \approx \frac{1}{n_T}+\frac{1}{n_C}; \;\;\; w_i = \frac{1}{V(\hat \theta_i)}$ 
+ $V(\hat \theta_i) \approx \frac{1}{n_T}+\frac{1}{n_C}\;(SMD);\;\; \approx \frac{1}{n_{11}} + \frac{1}{n_{12}} + \frac{1}{n_{21}} + \frac{1}{n_{22}}\;(log\;OR)$
+ 
+ $w_i = \frac{1}{V(\hat \theta_i)}$ 
 
  $\hat \theta = \frac{\Sigma w_i \hat \theta_i}{\Sigma w_i}; \;\;\; V(\hat \theta) = \frac{1}{\Sigma w_i}$ 
 
@@ -498,7 +500,7 @@ bcg_or[1:6, c("tpos", "tneg", "cpos", "cneg", "yi", "vi")]
 
 Once you have your standardized mean differences, you can compute an overall estimate, but you need to account for the fact that some estimates are more precise than others.
 
-The variance of the standardized mean difference is a simple function of the sample sizes in the treatment and control. You should calculate a weight equal to the inverse of the variance to insure that the studies with the largest sample sizes (and thus the greatest precision) get weighted more heavily.
+The variance of the standardized mean difference is approximated by a simple function of the sample sizes in the treatment and control for the standardized mean difference and by a simple function of the four cell counts for the log odds ratio. You should calculate a weight equal to the inverse of the variance to insure that the studies with the largest sample sizes (and thus the greatest precision) get weighted more heavily.
 
 The overall estimate, theta-hat is a weighted average of the individual study estimates. If you take the square of the overall estimate and divide by the estimated variance of the overall estimate, you get a statistic for testing the hypothesis that the overall mean difference is zero.
 
@@ -540,11 +542,9 @@ You can fit a random effects model using standard software like PROC MIXED in SA
 
 </div>
 
-## Fixed effects model for LOS data
-
 ## Random effects model for LOS data
 
-```{r rma, comment=""}
+```{r rma_los, comment=""}
 los_random_effects <- rma(
   measure="SMD", 
   m1i=m1i, sd1i=sd1i, n1i=n1i, 
@@ -555,15 +555,34 @@ los_random_effects_text <-
 cat(los_random_effects_text[12:15], sep="\n")
 ```
 
+## Random effects model for BCG data
+
+```{r rma_bcg, comment=""}
+bcg_random_effects <- rma(
+  measure="SMD", 
+  ai=tpos, bi=tneg, 
+  ci=cpos, di=cneg)
+  data=cbg, slab=paste(author, year))
+bcg_random_effects_text <-
+  capture.output(bcg_random_effects)
+cat(bcg_random_effects_text[12:15], sep="\n")
+```
+
 ## Test of homogeneity for the LOS data
 
-```{r homogeneity-los}
+```{r homogeneity-los, comment=""}
 cat(los_random_effects_text[4:10], sep="\n")
 ```
 
-## Forest plot
+## Test of homogeneity for the BCG data
 
-```{r forest}
+```{r homogeneity-bcg, comment=""}
+cat(bcg_random_effects_text[4:10], sep="\n")
+```
+
+## Forest plot for the LOS data
+
+```{r forest_los}
 forest(
   los_random_effects, 
   xlim=c(-7, 5), 
