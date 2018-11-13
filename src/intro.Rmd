@@ -488,19 +488,29 @@ bcg_or[1:6, c("tpos", "tneg", "cpos", "cneg", "yi", "vi")]
 
 ## Fixed effects model
 
- $V(\hat \theta_i) \approx \frac{1}{n_T}+\frac{1}{n_C}\;(SMD);\;\; \approx \frac{1}{n_{11}} + \frac{1}{n_{12}} + \frac{1}{n_{21}} + \frac{1}{n_{22}}\;(log\;OR)$
+ $V(\hat \theta_i) \approx \frac{1}{n_T}+\frac{1}{n_C}\;(SMD)
+ 
+ $  \approx \frac{1}{n_{11}} + \frac{1}{n_{12}} + \frac{1}{n_{21}} + \frac{1}{n_{22}}\;(log\;OR)$
  
  $w_i = \frac{1}{V(\hat \theta_i)}$ 
-
- $\hat \theta = \frac{\Sigma w_i \hat \theta_i}{\Sigma w_i}; \;\;\; V(\hat \theta) = \frac{1}{\Sigma w_i}$ 
-
- $\frac{\hat \theta^2}{V(\hat \theta)} \sim \chi^2(1)$ 
-
+ 
 <div class="notes">
 
 Once you have your standardized mean differences, you can compute an overall estimate, but you need to account for the fact that some estimates are more precise than others.
 
 The variance of the standardized mean difference is approximated by a simple function of the sample sizes in the treatment and control for the standardized mean difference and by a simple function of the four cell counts for the log odds ratio. You should calculate a weight equal to the inverse of the variance to insure that the studies with the largest sample sizes (and thus the greatest precision) get weighted more heavily.
+
+</div>
+
+## Fixed effects model (cont'd)
+
+ $\hat \theta = \frac{\Sigma w_i \hat \theta_i}{\Sigma w_i}$
+ 
+ $V(\hat \theta) = \frac{1}{\Sigma w_i}$ 
+
+ $\frac{\hat \theta^2}{V(\hat \theta)} \sim \chi^2(1)$ 
+
+<div class="notes">
 
 The overall estimate, theta-hat is a weighted average of the individual study estimates. If you take the square of the overall estimate and divide by the estimated variance of the overall estimate, you get a statistic for testing the hypothesis that the overall mean difference is zero.
 
@@ -559,10 +569,10 @@ cat(los_random_effects_text[12:15], sep="\n")
 
 ```{r rma_bcg, comment=""}
 bcg_random_effects <- rma(
-  measure="SMD", 
+  measure="OR", 
   ai=tpos, bi=tneg, 
-  ci=cpos, di=cneg)
-  data=cbg, slab=paste(author, year))
+  ci=cpos, di=cneg,
+  data=bcg, slab=paste(author, year))
 bcg_random_effects_text <-
   capture.output(bcg_random_effects)
 cat(bcg_random_effects_text[12:15], sep="\n")
@@ -584,35 +594,115 @@ cat(bcg_random_effects_text[4:10], sep="\n")
 
 ```{r forest_los}
 forest(
-  los_random_effects, 
-  xlim=c(-7, 5), 
-  alim=c(-3, 1), 
+  los_random_effects,
   cex=0.8)
-text(-7, 11, "Study/Source",          pos=4, cex=.8)
-text( 5, 11, "Observed SMD [95% CI]", pos=2, cex=.8)
 ```
 
-## Funnel plot
+## Forest plot for the BCG data
+
+```{r forest_bcg}
+forest(
+  bcg_random_effects, 
+  cex=0.8)
+```
+
+## Funnel plot for the LOS data
 
 ```{r funnel_los}
 funnel(los_random_effects)
 ```
 
+## Funnel plot for the BCG data
+
+```{r funnel_bcg}
+funnel(bcg_random_effects)
+```
+
 ## L'Abbe plot
+
+```{r labbe-plot}
+bcg_risk_difference <- rma(
+  measure="RD", 
+  ai=tpos, bi=tneg, 
+  ci=cpos, di=cneg,
+  data=bcg, slab=paste(author, year))
+labbe(bcg_risk_difference)
+```
+
+## L'Abbe plot on log odds scale
+
+```{r labbe-plot-log}
+labbe(bcg_random_effects)
+```
 
 ## Meta regression
 
+```{r meta-regression, comment=""}
+meta_regression_bcg <- rma(yi, vi, mods = ~ ablat + year, data=bcg_or)
+meta_regression_bcg_text <-
+  capture.output(meta_regression_bcg)
+cat(meta_regression_bcg_text[13:21], sep="\n")
+```
+
+## Change in heterogeneity for meta regression model
+
+```{r change-in-heterogeneity, comment=""}
+cat(meta_regression_bcg_text[4:11], sep="\n")
+```
+
 ## Publication guidelines
 
-* PRISMA
+* PRISMA (2009)
 
   + Preferred Reporting Items for Systematic Reviews and Meta-Analyses
 
-* QUOROM
+* QUOROM (1996)
 
   + QUality Of Reporting Of Meta-analysis
+  
+## PRISMA flow diagram
+
+![Top half of PRISMA flow diagram](../images/prisma_flow_top.png)
+
+## PRISMA flow diagram
+
+![Bottom half of PRISMA flow diagram](../images/prisma_flow_bottom.png)
+
+## PRISMA checklist, part 1
+
+![Checklist for PRISMA](../images/prisma_checklist_1.png)
+
+## PRISMA checklist, part 2
+
+![Checklist for PRISMA](../images/prisma_checklist_2.png)
+
+## PRISMA checklist, part 3
+
+![Checklist for PRISMA](../images/prisma_checklist_3.png)
+
+## PRISMA checklist, part 4
+
+![Checklist for PRISMA](../images/prisma_checklist_4.png)
 
 ## Conclusion
+
+* Design of meta-analysis
+
+  + Include a librarian
+  
+  + Aggressive search strategy
+  
+* Statistical summary
+
+  + Random versus fixed effects versus meta regression
+  
+  + Forest, funnel, L'Abbe plots
+  
+  + Cochrane's Q and I-squared
+  
+* Reporting
+
+  + PRISMA flow diagram and checklist
 
 ```{r save-everything, results=FALSE}
 save.image(file="../data/intro.RData")
