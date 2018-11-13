@@ -5,6 +5,16 @@ date: "11/11/2018"
 output: powerpoint_presentation
 ---
 
+```{r prelims, echo=FALSE}
+library(knitr)
+opts_chunk$set(echo=FALSE, fig.width=6.5, fig.height=6.5)
+library(magrittr)
+suppressMessages(suppressWarnings(library(metafor)))
+bcg <- get(data(dat.bcg))
+los <- get(data(dat.normand1999))
+```
+
+
 ## Abstract
 
 Meta-analysis is the quantitative pooling of data from multiple studies. The three threats to the validity of a meta-analytic finding are heterogeneity, publication bias, and poor individual study quality. This talk will introduce you to the major design issues that you must address in your research protocol to insure that your meta-analysis will have credibility. 
@@ -50,7 +60,7 @@ For example, a linear regression model on the pooled data provided an estimated 
 
 <div class="notes">
 
-Several researchers (Olsen 1995; Fisch 1996) noted heterogeneity in this meta-analysis, a mixing of apples and oranges. Studies before 1970 were dominated by studies in the United States and particularly studies in New York. Studies after 1970 included many other locations including third world countries. 
+Several researchers (Olsen 1995; Fisch 1996) noted heterogeneity in this meta-analysis, a mixing of apples and oranges. Studies before 1970 were dominated by studies in the United States and particularly studies in New York. Studies after 1970 included many other locations including Third World countries. 
 
 </div>
 
@@ -215,6 +225,8 @@ You can assess quality issues by limiting studies based on scoring systems like 
 
 Detailed protocol
 
+* Get help from a librarian
+
 * Search strategy
 
 * Inclusion/exclusion criteria
@@ -223,23 +235,24 @@ Detailed protocol
 
 <div class="notes">
 
-A detailed protocol is a must for meta-analysis. You have to provide a level of detail comparable to a clinical trial. Your protocol should address your search strategy, your inclusion and exclusion criteria, and your process for extracting information from each trial.
+A detailed protocol is a must for meta-analysis. You have to provide a level of detail comparable to a clinical trial. 
+A librarian is especially helpful here.
+
+Medline is a comprehensive database of research publications in medical journals. It's a great place to start, but you should also search in databases other than Medline, such as Embase and CINAHL.
+
+Look through presentation abstracts at major conferences. Also look for clinical trials that have been registered in a clinical trial database.
+
+Make sure you pay to get translations for relevant articles published in languages other than English.
+
+Detail exactly which studies do and do not qualify for inclusion in your meta-analysis. Have two independent raters evaluate each candidate article against your inclusion/exclusion criteria.
+
+Also, detail what results you are going to extract from each article. Have two independent parties do the extraction and then compare.
 
 </div>
 
-## Search strategy
-
-## Inclusion/exclusion criteria
-
-## Process for extracting numerical results
-
-## Data preparation
-
-Continuous data
-
-Catetgorical data
-
 ## Data analysis
+
+* Pick a summary measure
 
 * Forest plot,
 
@@ -264,15 +277,6 @@ Let's talk about data analysis. This talk will cover several different statistic
 "Results from 13 studies examining the effectiveness of the Bacillus Calmette-Guerin (BCG) vaccine against tuberculosis."
 
 Available at https://rdrr.io/cran/metafor/man/dat.colditz1994.html
-
-```{r prelims, echo=FALSE}
-library(knitr)
-opts_chunk$set(echo=FALSE, fig.width=4.5, fig.height=2.5)
-library(magrittr)
-suppressMessages(suppressWarnings(library(metafor)))
-bcg <- get(data(dat.bcg))
-los <- get(data(dat.normand1999))
-```
 
 ## BCG data, first three columns
 
@@ -306,19 +310,11 @@ los[1:6, c("n1i", "m1i", "sd1i", "n2i", "m2i", "sd2i")]
 
 For a continuous outcome, the standardized mean difference is computed as 
 
-$\frac{\bar{X}_T-\bar{X}_C}{Estimated\;Standard\;Deviation}$
+ $\hat \theta_i = \frac{\bar{X}_T-\bar{X}_C}{Estimated\;Standard\;Deviation}$
 
-or equivalently
+or
 
-$\frac{\bar{X}_C-\bar{X}_T}{Estimated\;Standard\;Deviation}$
-
-Different estimated standard deviations
-
-* Cohen's d (pooled standard deviation)
-
-* Hedge's g (bias correction)
-
-* Adjustments for heterogeneity and pairing
+ $\hat \theta_i = \frac{\bar{X}_C-\bar{X}_T}{Estimated\;Standard\;Deviation}$
 
 <div class="notes">
 
@@ -326,7 +322,21 @@ For continuous outcomes, the most common summary measure is the standardized mea
 
 Which way do you subtract? It depends on whether a large value is good or a small value is good. The Cochrane Collaboration suggests subtracting in such a way that negative values suggest that the new treatment is better and positive values suggest that the control treatment is better.
 
-There are several ways to estimate the standard deviation.
+</div>
+
+## Estimating the standard deviation
+
+Different estimated standard deviations
+
+* Cohen's d (pooled standard deviation)
+
+* Hedge's g (bias correction)
+
+* Adjustments for heteroscedascity or pairing
+
+<div class="notes">
+
+There are several ways to estimate the standard deviation. With the exception of pairing, where the estimated standard deviation could be substantially lower, these approaches are not all that different.
 
 </div>
 
@@ -334,7 +344,7 @@ There are several ways to estimate the standard deviation.
 
 Uses a pooled standard deviation.
 
-$S_p=\sqrt{\frac{n_TS_T^2+n_CS_C^2}{n_T+n_C}}$
+ $S_p=\sqrt{\frac{n_TS_T^2+n_CS_C^2}{n_T+n_C}}{\;}$
 
 <div class="notes">
 
@@ -348,9 +358,7 @@ Cohen's d uses a pooled standard deviation in the denominator.
 
 Pooled standard deviation adjusted by a bias correction factor
 
-$J \approx 1-\frac{3}{4df-1}$
-
-If there is heterogeneity within a study, you can use an the standard Satterthwaite alternative, but some researchers will use the control standard deviation.
+ $J \approx 1-\frac{3}{4df-1}$
 
 <div class="notes">
 
@@ -360,41 +368,218 @@ Both the exact and the approximate bias adjustment formulas are less than one, m
 
 </div>
 
-## 
+## Adjusting for heteroscedascity
 
-## Effect sizes
+Two choices for heteroscedascity within a study
 
-```{r escalc}
-res <- escalc(measure="MD", m1i=m1i, sd1i=sd1i, n1i=n1i, m2i=m2i, sd2i=sd2i, n2i=n2i, data=los)
-res
+ $\sqrt{\frac{S_T^2+S_C^2}{2}}{\;}$
+
+or
+
+ $S_C$
+
+<div class="notes">
+
+If there is heterogeneity within a study, you can use the square root of the average the two variances or the square root of the control group variance.
+
+</div>
+
+## Adjusting for pairing
+
+For pairing use
+
+ $S_D$
+
+if it is available, or
+
+ $\sqrt{S_T^2+S_C^2-2\hat\rho S_TS_C}{\;}$
+
+if it is not.
+
+<div class="notes">
+
+For paired data, use the standard deviation of the differences, if it reported, or estimate the standard deviation of the differences using a reasonable guess as to the correlation.
+
+</div>
+
+## Analyzing proportions
+
+* Odds ratio
+
+* Relative risk
+
+* Risk difference
+
+Odds ratios and relative risk are always analyzed and displayed on a log scale.
+
+<div class="notes">
+
+When you are comparing proportions rather than means, you have three ways of summarizing your data. You can use the odds ratio, the relative risk, or the risk difference in proportions.
+
+</div>
+
+## Titanic data
+
+![Mortality versus gender table](..\images\titanic_table.bmp)
+
+<div class="notes">
+
+You already have seen the various summary measures used for comparing two proportions, but let me review them anyway.
+
+This is table from the Titanic, listing passengers only (not crew members) by gender and by whether they lived or died. Kate Winslet is in the lower left corner of women who survived and Leonardo DiCaprio, sadly, is in the upper right corner of men who died.
+
+</div>
+
+## Odds ratio
+
+![Odds ratio calculation](../images/titanic_or.bmp)
+
+<div class="notes">
+
+The ratio of deaths to survivors is about 5 to 1 among men and exactly 1 to 2 among women. So the odds ratio is approximately 10.
+
+</div>
+
+## Relative risk
+
+![Relative risk calculation](../images/titanic_rr.bmp)
+
+<div class="notes">
+
+You could also look at the probability of death. It is 83% among men and 33% among women. That ratio, approximately 2.5 is the relative risk.
+
+</div>
+
+## Risk difference
+
+![Risk difference calculation](../images/titanic_rd.bmp)
+
+<div class="notes">
+  
+Rather than dividing one ratio by another, you could subtract one from the other. You get a value of 0.5, which is the risk difference or the absolute risk.
+
+Which measure to choose? There are practical reasons to prefer the relative risk or the risk difference to the odds ratio, but the odds ratio has an important advantage. It is not artificially constrained by any bound. 
+
+The other measures will have an upper bound depending on what the control group is. It is hard to get a relative risk of 2.0 or a risk difference of 0.5 when the proportion in your control group is 0.8.
+
+The artifical constraints of the relative risk and risk difference will sometimes create unwanted heterogeneity in your meta-analysis.
+  
+</div>
+
+## Standardized mean differences for los data
+
+```{r escalc-smd}
+los_smd <- escalc(
+  measure="SMD", data=los, 
+  m1i=m1i, sd1i=sd1i, n1i=n1i, 
+  m2i=m2i, sd2i=sd2i, n2i=n2i)
+los_smd[1:6, -(1:2)]
 ```
 
-## Random effect
+## Odds ratios for the BCG data
 
-```{r rma}
-res <- rma(
+```{r escalc-or}
+bcg_or <- escalc(
+  measure="OR", data=dat.bcg,
+  ai=tpos, bi=tneg, 
+  ci=cpos, di=cneg)
+bcg_or[1:6, c("tpos", "tneg", "cpos", "cneg", "yi", "vi")]
+```
+
+## Fixed effects model
+
+ $V(\hat \theta_i) \approx \frac{1}{n_T}+\frac{1}{n_C}; \;\;\; w_i = \frac{1}{V(\hat \theta_i)}$ 
+
+ $\hat \theta = \frac{\Sigma w_i \hat \theta_i}{\Sigma w_i}; \;\;\; V(\hat \theta) = \frac{1}{\Sigma w_i}$ 
+
+ $\frac{\hat \theta^2}{V(\hat \theta)} \sim \chi^2(1)$ 
+
+<div class="notes">
+
+Once you have your standardized mean differences, you can compute an overall estimate, but you need to account for the fact that some estimates are more precise than others.
+
+The variance of the standardized mean difference is a simple function of the sample sizes in the treatment and control. You should calculate a weight equal to the inverse of the variance to insure that the studies with the largest sample sizes (and thus the greatest precision) get weighted more heavily.
+
+The overall estimate, theta-hat is a weighted average of the individual study estimates. If you take the square of the overall estimate and divide by the estimated variance of the overall estimate, you get a statistic for testing the hypothesis that the overall mean difference is zero.
+
+Compare this test statistic to a chi-squared distribution with 1 degree of freedom.
+
+</div>
+
+## Cochrane's Q
+
+Test of homogeneity
+
+ $Q = \Sigma w_i(\hat \theta_i - \hat \theta)^2$
+
+ $Q \sim \chi^2(k-1)$
+
+ $I^2 = 100\frac{Q-(k-1)}{Q}$
+
+<div class="notes">
+
+Heterogeneity will manifest itself with a greater degree of variation from one study to another than the amount you'd expect due to the sample sizes in each study.
+
+If the value of Q is close to its degrees of freedom (k-1), then you have evidence that the studies are homogenous. If the value of Q is much larger than the degrees of freedom, then you have evidence of heterogeneity.
+
+I-squared is a measure of the degree of heterogeneity that ranges between 0 and 100.
+
+</div>
+
+## Random effects model
+
+Rough approximation
+
+ $\hat \tau^2 = max(0, Q - (k-1))$
+
+ $W_i^* = \frac{1}{V(\hat \theta_i) + \hat \tau^2}$
+
+<div class="notes">
+
+You can fit a random effects model using standard software like PROC MIXED in SAS. The random effects model assumes that each study has an extra source of random variation, caused by the numerous small differences that occur from one study to another. The weights in a random effects meta-analysis are closer to one another, much closer to one another when the variance componet (tau-hat squared) is large.
+
+</div>
+
+## Fixed effects model for LOS data
+
+## Random effects model for LOS data
+
+```{r rma, comment=""}
+los_random_effects <- rma(
   measure="SMD", 
   m1i=m1i, sd1i=sd1i, n1i=n1i, 
   m2i=m2i, sd2i=sd2i, n2i=n2i, 
   data=los, slab=source)
-res
+los_random_effects_text <-
+  capture.output(los_random_effects)
+cat(los_random_effects_text[12:15], sep="\n")
+```
+
+## Test of homogeneity for the LOS data
+
+```{r homogeneity-los}
+cat(los_random_effects_text[4:10], sep="\n")
 ```
 
 ## Forest plot
 
 ```{r forest}
-forest(res, xlim=c(-7, 5), alim=c(-3, 1), cex=0.8)
+forest(
+  los_random_effects, 
+  xlim=c(-7, 5), 
+  alim=c(-3, 1), 
+  cex=0.8)
 text(-7, 11, "Study/Source",          pos=4, cex=.8)
 text( 5, 11, "Observed SMD [95% CI]", pos=2, cex=.8)
 ```
 
-## Cochran's Q and I-squared
-
 ## Funnel plot
 
-## L'Abbe plot
+```{r funnel_los}
+funnel(los_random_effects)
+```
 
-## Fixed versus random analysis
+## L'Abbe plot
 
 ## Meta regression
 
@@ -410,3 +595,6 @@ text( 5, 11, "Observed SMD [95% CI]", pos=2, cex=.8)
 
 ## Conclusion
 
+```{r save-everything, results=FALSE}
+save.image(file="../data/intro.RData")
+```
