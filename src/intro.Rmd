@@ -515,9 +515,9 @@ bcg_or[1:6, c("tpos", "tneg", "cpos", "cneg", "yi", "vi")]
 
 ## Fixed effects model
 
- $V(\hat \theta_i) \approx \frac{1}{n_T}+\frac{1}{n_C}\;(SMD)$
+ $V(\hat \theta_i) \approx \frac{1}{n_T}+\frac{1}{n_C}$
  
- $  \approx \frac{1}{n_{11}} + \frac{1}{n_{12}} + \frac{1}{n_{21}} + \frac{1}{n_{22}}\;(log\;OR)$
+ $\approx \frac{1}{n_{11}} + \frac{1}{n_{12}} + \frac{1}{n_{21}} + \frac{1}{n_{22}}$
  
  $w_i = \frac{1}{V(\hat \theta_i)}$ 
  
