@@ -108,8 +108,8 @@ The approximate confidence interval for the log odds is
 ```{r ci, echo=FALSE}
 lo <- round(log.or-1.96*sqrt(var), 3)
 hi <- round(log.or+1.96*sqrt(var), 3)
-cat(paste0(log.or, "-1.96*√", var,"=", lo))
-cat(paste0(log.or, "+1.96*√", var,"=", hi))
+cat(paste0(log.or, "-1.96*sqrt(", var,")=", lo))
+cat(paste0(log.or, "+1.96*sqrt(", var,")=", hi))
 ```
 
 These limits include the value of zero, so this particular study failed to reject the null hypothesis.
