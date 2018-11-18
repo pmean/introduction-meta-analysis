@@ -47,14 +47,7 @@ bcg_fixed_effects <- rma(
 bcg_fixed_effects_text <-
   capture.output(bcg_fixed_effects)
 cat(bcg_fixed_effects_text, sep="\n")
-forest(bcg_fixed_effects)
-```
-
-## Experiments
-
-```{r experiments,fig.width=6.5, fig.height=4.5}
-par(mar=c(4.1, 0, 0, 0))
-forest(bcg_fixed_effects)
+forest(bcg_fixed_effects, cex=0.8)
 ```
 
 Here are the results for the first study, listed in a two by two table. A positive result is bad, indicating that the vaccine did not work.
@@ -95,8 +88,8 @@ cat(paste0("log(", or, ")=", log.or))
 ```
 
 ```{r forest-theta1}
-forest(bcg_fixed_effects)
-text(-0.94, 13.5, "-0.94", col="red")
+forest(bcg_fixed_effects, cex=0.8)
+text(-0.94, 13.5, "-0.94", col="red", cex=0.8)
 ```
 
 The variance of the log odds ratio is approximately
@@ -115,8 +108,8 @@ The approximate confidence interval for the log odds is
 ```{r ci, echo=FALSE}
 lo <- round(log.or-1.96*sqrt(var), 3)
 hi <- round(log.or+1.96*sqrt(var), 3)
-cat(paste0(log.or, "-1.96*", var,"=", lo))
-cat(paste0(log.or, "+1.96*", var,"=", hi))
+cat(paste0(log.or, "-1.96*√", var,"=", lo))
+cat(paste0(log.or, "+1.96*√", var,"=", hi))
 ```
 
 These limits include the value of zero, so this particular study failed to reject the null hypothesis.
@@ -129,15 +122,88 @@ text( 0.23, 13.5,  "0.23", col="red")
 
 The log odds ratios and variances for the full data set are listed below.
 
-```{r, full-log-or, echo=FALSE}
+```{r full-log-or, echo=FALSE}
 bcg_or <- escalc(
   measure="OR", data=dat.bcg,
   ai=tpos, bi=tneg, 
   ci=cpos, di=cneg)
-b <- data.frame(y=round(bcg_or$yi,2), w=round(1/bcg_or$vi,1))
+b <- data.frame(
+  y=round(bcg_or$yi,2), 
+  w=round(1/bcg_or$vi,1))
 b
 y <- round(sum(b$y*b$w)/sum(b$w), 2)
 ```
+
+The overall estimate is a weighted average of the individual study estimates.
+
+```{r overall-weighted-sum}
+l <- "("
+r <- ")"
+l %>%
+  paste0(b$y[1]) %>%
+  paste0(r, l) %>%
+  paste0(b$w[1]) %>%
+  paste0(r, "+",l) %>%
+  paste0(b$y[2]) %>%
+  paste0(r, l) %>%
+  paste0(b$w[2]) %>%
+  paste0(r, "+...+",l) %>%
+  paste0(b$y[13]) %>%
+  paste0(r, l) %>%
+  paste0(b$w[13]) %>%
+  paste0(r, "=") %>%
+  paste0(y) %>%
+  cat
+```
+
+```{r overall}
+par(cex=0.8)
+forest(bcg_fixed_effects)
+text(y, -0.5, y, col="red", cex=0.8)
+```
+
+```{r overall-std-error}
+se <- round(sqrt(1/sum(b$w)), 3)
+lo <- round(y-1.96*se, 2)
+hi <- round(y+1.96*se, 2)
+```
+
+The standard error of the overall estimate is simply the reciprocal of the sum of the weights.
+
+1 / (`r b$w[1]` + ... + `r b$w[13]`) = `r se`.
+
+The confidence limits for the overall estimate are
+
+`r y` - 1.96 (`r se`) = `r lo`.
+
+`r y` + 1.96 (`r se`) = `r hi`.
+
+```{r overall-ci}
+forest(bcg_fixed_effects, cex=0.8)
+text(-2, -1, lo, col="red", cex=0.8, adj=1)
+text( 1, -1, hi, col="red", cex=0.8, adj=0)
+arrows(-1.9, -1, lo, -1, col="red", length=0.05)
+arrows( 0.9, -1, hi, -1, col="red", length=0.05)
+```
+
+The relative weights given to each study are listed below.
+
+```{r wt}
+f <- 0.2*sqrt(b$w/sum(b$w))
+rw <- 100*b$w/sum(b$w)
+rw <- ifelse(rw<=0.95, round(rw,1), round(rw))
+x <- data.frame(
+  rel_wt=paste0(rw, "%"))
+x
+```
+
+The relative weights determine the size of the squares in the forest plot.
+
+```{r squares}
+forest(bcg_fixed_effects, cex=0.8)
+text(b$y, (13:1)+0.5, x$rel_wt, cex=0.5, col="red") 
+```
+
 
 ```{r save-everything, results=FALSE}
 save.image(file="../data/calculations.RData")
