@@ -2,28 +2,26 @@
 title: "Introduction to meta-analysis"
 author: "Steve Simon"
 date: "11/14/2018"
-graphics: yes
 output: html_document
 ---
 
 ```{r prelims, echo=FALSE}
-library(knitr)
-opts_chunk$set(echo=FALSE, fig.width=6.5, fig.height=4.5)
-library(magrittr)
+suppressMessages(suppressWarnings(library(knitr)))
+suppressMessages(suppressWarnings(library(magrittr)))
 suppressMessages(suppressWarnings(library(metafor)))
+opts_chunk$set(echo=FALSE, fig.width=6.5, fig.height=4.5)
 bcg <- get(data(dat.bcg))
-los <- get(data(dat.normand1999))
 ```
 
 ## Overview
 
-This presentation will show how to use base R functions to reproduce the forest plot and funnel plot that is produced by the metafor package. It will also try to motivate how you should interpret patterns in these plots.
+This presentation will show how to use base R functions to reproduce the elements of a forest plot. It will also offer some suggestions on how you should interpret patterns in this plot.
 
 ## BCG description
 
 "Results from 13 studies examining the effectiveness of the Bacillus Calmette-Guerin (BCG) vaccine against tuberculosis."
 
-Available at https://rdrr.io/cran/metafor/man/dat.colditz1994.html
+The BCG data comes with the metafor package in R, but is also available at https://rdrr.io/cran/metafor/man/dat.colditz1994.html
 
 ## BCG data, first three columns
 
@@ -89,7 +87,9 @@ cat(paste0("log(", or, ")=", log.or))
 
 ```{r forest-theta1}
 forest(bcg_fixed_effects, cex=0.8)
-text(-0.94, 13.5, "-0.94", col="red", cex=0.8)
+segments(4.75, 13.3, 4.75, 13.5, col="red")
+segments(4.75, 13.5, log.or, 13.5, col="red")
+arrows(log.or, 13.5, log.or, 13, col="red", length=0.05)
 ```
 
 The variance of the log odds ratio is approximately
@@ -115,9 +115,13 @@ cat(paste0(log.or, "+1.96*sqrt(", var,")=", hi))
 These limits include the value of zero, so this particular study failed to reject the null hypothesis.
 
 ```{r forest-ci1}
-forest(bcg_fixed_effects)
-text(-2.11, 13.5, "-2.11", col="red")
-text( 0.23, 13.5,  "0.23", col="red")
+forest(bcg_fixed_effects, cex=0.8)
+segments(5.75, 12.7, 5.75, 12.5, col="red")
+segments(5.75, 12.5, lo, 12.5, col="red")
+arrows(lo, 12.5, lo, 13, col="red", length=0.05)
+segments(6.75, 13.3, 6.75, 13.5, col="red")
+segments(6.75, 13.5, hi, 13.5, col="red")
+arrows(hi, 13.5, hi, 13, col="red", length=0.05)
 ```
 
 The log odds ratios and variances for the full data set are listed below.
@@ -157,33 +161,61 @@ l %>%
 ```
 
 ```{r overall}
-par(cex=0.8)
-forest(bcg_fixed_effects)
-text(y, -0.5, y, col="red", cex=0.8)
+forest(bcg_fixed_effects, cex=0.8)
+segments(4.75, -0.7, 4.75, -0.5, col="red")
+segments(4.75, -0.5, y, -0.5, col="red")
+arrows(y, -0.5, y, -1, col="red", length=0.05)
 ```
 
 ```{r overall-std-error}
-se <- round(sqrt(1/sum(b$w)), 3)
-lo <- round(y-1.96*se, 2)
-hi <- round(y+1.96*se, 2)
+v <- round(1/sum(b$w), 5)
+lo <- round(y-1.96*sqrt(v), 2)
+hi <- round(y+1.96*sqrt(v), 2)
 ```
 
-The standard error of the overall estimate is simply the reciprocal of the sum of the weights.
+The variance of the overall estimate is simply the reciprocal of the sum of the weights.
 
-1 / (`r b$w[1]` + ... + `r b$w[13]`) = `r se`.
+```{r display-se-formula}
+paste0("1/", l) %>%
+  paste0(b$w[1]) %>%
+  paste0("+") %>%
+  paste0(b$w[2]) %>%
+  paste0("+ ... +") %>%
+  paste0(b$w[13]) %>% 
+  paste0(r, "=") %>%
+  paste0(v) %>%
+  cat
+```
+
 
 The confidence limits for the overall estimate are
 
-`r y` - 1.96 (`r se`) = `r lo`.
-
-`r y` + 1.96 (`r se`) = `r hi`.
-
 ```{r overall-ci}
+y %>%
+  paste0("-1.96 sqrt", l) %>%
+  paste0(v)               %>%
+  paste0(r, "=")          %>%
+  paste0(lo)              %>%
+  cat
+
+y %>%
+  paste0("+1.96 sqrt", r) %>%
+  paste0(v)               %>%
+  paste0(r, "=")          %>%
+  paste0(hi)              %>%
+  cat
+```
+
+```{r overall-ci-plot}
 forest(bcg_fixed_effects, cex=0.8)
-text(-2, -1, lo, col="red", cex=0.8, adj=1)
-text( 1, -1, hi, col="red", cex=0.8, adj=0)
-arrows(-1.9, -1, lo, -1, col="red", length=0.05)
-arrows( 0.9, -1, hi, -1, col="red", length=0.05)
+segments(5.75, -1.3, 5.75, -1.5, col="red")
+segments(5.75, -1.5, lo-1, -1.5, col="red")
+segments(lo-1, -1.5, lo-1, -1, col="red")
+arrows(lo-1, -1, lo, -1, col="red", length=0.05)
+segments(6.75, -0.7, 6.75, -0.5, col="red")
+segments(6.75, -0.5, hi+1, -0.5, col="red")
+segments(hi+1, -0.5, hi+1, -1, col="red")
+arrows(hi+1, -1, hi, -1, col="red", length=0.05)
 ```
 
 The relative weights given to each study are listed below.
@@ -193,7 +225,9 @@ f <- 0.2*sqrt(b$w/sum(b$w))
 rw <- 100*b$w/sum(b$w)
 rw <- ifelse(rw<=0.95, round(rw,1), round(rw))
 x <- data.frame(
-  rel_wt=paste0(rw, "%"))
+  study=c(1:13, "Total"),
+  wt=c(b$w, sum(b$w)),
+  rel_wt=paste0(c(rw, sum(rw)), "%"))
 x
 ```
 
@@ -201,9 +235,24 @@ The relative weights determine the size of the squares in the forest plot.
 
 ```{r squares}
 forest(bcg_fixed_effects, cex=0.8)
-text(b$y, (13:1)+0.5, x$rel_wt, cex=0.5, col="red") 
+text(b$y, (13:1)+0.5, x$rel_wt[-14], cex=0.5, col="red") 
 ```
 
+Finally, notice a dotted vertical line at the log odds ratio=0. This is the null value.
+
+## What to look for in a forest plot
+
+The forest plot provides information about individual studies, and how they relate to the overall estimate. Here are some things to look for.
+
+1. Look at the overall effect first. Does the overall confidence interval diamond intersect the vertical dotted line of no effect?
+
+2. Count the number of individual studies which fail to achieve statistical significance. These are individual confidence intervals that intersect the vertical dotted line. The count of non-significant studies is not a primary measure of evidence, because you can easily have a meta-analysis where every single individual study is not statistically significant, but the overall result is strongly significant. Still, it's an interesting measure, and gives you an initial impression of what the exisiting publications have said so far.
+
+3. Count the number of studies where the point estimate is on the "wrong" side of the dotted line. Again, this is not a primary measure of evidence. Informally, a meta-analysis strengthens the results of each individual study if all the individual studies are pointing in the same direction. A few studies pointing in the opposite direction will tend to dilute the strength of a meta-analytic finding (as they should).
+
+4. Look at the relative weights given to each study. Does one study tend to dominate the findings?
+
+5. Look for evidence of heterogeneity. This can occur several ways, but the easiest source of heterogeneity is a bimodal pattern in the studies. Most of the studies might show little or no effect, for example, but a smaller group of studies might cluster in a region of a strong effect. If you are familiar with the individual studies, ask yourself if there is a feature that is unique to the outlying cluster of studies.
 
 ```{r save-everything, results=FALSE}
 save.image(file="../data/calculations.RData")
