@@ -48,48 +48,209 @@ cat(bcg_fixed_effects_text, sep="\n")
 forest(bcg_fixed_effects, cex=0.8)
 ```
 
-Here are the results for the first study, listed in a two by two table. A positive result is bad, indicating that the vaccine did not work.
+Here are the results for the first study, listed in a two by two table. A positive result is listed in the first column and a negative result in the second column. A positive result is bad, indicating that the vaccine did not work.
 
 ```{r table}
 v <- bcg[1, c("tpos", "tneg", "cpos", "cneg")]
 m <- matrix(v, nrow=2, byrow=TRUE)
-dimnames(m) <- list(
-  c("T", "C"),
-  c("Pos", "Neg")
-)
-m
 odds <- unlist(m[, 1])/unlist(m[, 2])
 or <- odds[1]/odds[2]
 log.or <- log(or)
-odds <- round(odds, 3)
-or <- round(or, 3)
-log.or <- round(log.or, 3)
+
+tx <- function(d, y, txt, co) {
+  text(d, y, txt, cex=0.8, adj=1, col=co)
+}
+
+display_table <- function(step, accent="red", i=1) {
+  v <- bcg[i, c("tpos", "tneg", "cpos", "cneg")]
+  w <- v # w <- format(v, big.mark=",")
+  
+  m <- matrix(v, nrow=2, byrow=TRUE)
+  odds <- unlist(m[, 1])/unlist(m[, 2])
+  or <- odds[1]/odds[2]
+  log.or <- log(or)
+
+  d0 <- -7.8
+  d1 <- d0 + 0.9
+  d2 <- d0 + 1.9
+  d3 <- d0 + 5.2
+  d4 <- d0 + 8.5
+  d5 <- 4.75
+  d6 <- d0 + 15.1
+
+  y1 <- 15.8
+  y2 <- y1 - 1.0
+  y3 <- y1 - 1.5
+  y4 <- 14.5 - i
+  y5 <- 14.0 - i
+  y6 <- 13.5 - i
+  
+  co <- ifelse(step==1, accent, "black")
+  tx(d0, y1, "T", co)
+  tx(d1, y1, w[1], co)
+  tx(d2, y1, w[2], co)
+  tx(d0, y2, "C", co)
+  tx(d1, y2, w[3], co)
+  tx(d2, y2, w[4], co)
+  if (step==1) return(invisible(1))
+
+  co <- ifelse(step==2, accent, "black")
+  odds <- round(odds, 3)
+  odds_t <- paste(w[1], "/", w[2], "=", odds[1])
+  odds_c <- paste(w[3], "/", w[4], "=", odds[2])
+  tx(d3, y1, odds_t, co)
+  tx(d3, y2, odds_c, co)
+  if (step==2) return(invisible(2))
+
+  co <- ifelse(step==3, accent, "black")
+  or <- round(or, 2)
+  or_calc <- paste(odds[1], "/", odds[2], "=", or)
+  tx(d4, y1, or_calc, co)
+  if (step==3) return(invisible(3))
+  
+  co <- ifelse(step==4, accent, "black")
+  log.or <- round(log.or, 2)
+  log_calc <- paste0("ln(", or, ") = ", log.or)
+  tx(d4, y2, log_calc, co)
+  if (step==4) {
+    segments(d4, y3, d4, y4, col=accent)
+    segments(log.or, y4, 5.1, y4, col=accent)
+    arrows(log.or, y4, log.or, y5, length=0.05, col=accent)
+    segments(4.3, y6, 5.1, y6, col=accent)
+    segments(4.3, y4, 4.3, y6, col=accent)
+    segments(5.1, y4, 5.1, y6, col=accent)
+  }
+  if(step==4) return(invisible(4))
+
+  co <- ifelse(step==5, accent, "black")
+  var <- round(sum(1/v), 3)
+  var_calc <- paste0(paste0("1/", v, collapse=" + "), " = ", var)
+  tx(d6, y1, var_calc, co)
+  if (step==5) return(invisible(5))
+
+  co <- ifelse(step==6, accent, "black")
+  lo <- round(log.or-1.96*sqrt(var), 2)
+  hi <- round(log.or+1.96*sqrt(var), 2)
+  ci_calc <- paste0(log.or, " ± 1.96 sqrt ", var," = ", lo, " to ", hi)
+  tx(d6, y2, ci_calc, co)
+  if (step==6) {
+    segments(6.2, y3, 6.2, y4, col=accent)
+    segments(7.1, y4, lo, y4, col=accent)
+    arrows(lo, y4, lo, y5, length=0.05, col=accent)
+    arrows(hi, y4, hi, y5, length=0.05, col=accent)
+    segments(5.2, y6, 7.1, y6, col=accent)
+    segments(5.2, y4, 5.2, y6, col=accent)
+    segments(7.1, y4, 7.1, y6, col=accent)
+  }
+  if (step==6) return(invisible(6))
+}
+forest(bcg_fixed_effects, cex=0.8)
+display_table(1)
 ```
 
 Calculate the odds for each row.
 
 ```{r odds, echo=FALSE}
-cat(paste(v[1], "/", v[2], "=", odds[1]))
-cat("\n")
-cat(paste(v[3], "/", v[4], "=", odds[2]))
+forest(bcg_fixed_effects, cex=0.8)
+display_table(2)
 ```
+
 The ratio of these two odds is the odds ratio.
 
 ```{r or, echo=FALSE}
-cat(paste(odds[1], "/", odds[2], "=", or))
+forest(bcg_fixed_effects, cex=0.8)
+display_table(3)
 ```
 
-The underlying distribution of the odds ratio is almost always skewed right and bounded below by zero, so you should consider a log transformation.
+The underlying distribution of the odds ratio is almost always skewed right and bounded below by zero, so you should consider a log transformation. This is the center of the confidence interval for the first study
 
 ```{r log-or, echo=FALSE}
-cat(paste0("log(", or, ")=", log.or))
+forest(bcg_fixed_effects, cex=0.8)
+display_table(4)
 ```
 
-```{r forest-theta1}
+Repeat these calculations for the second,
+
+```{r log-or2, echo=FALSE}
 forest(bcg_fixed_effects, cex=0.8)
-segments(4.75, 13.3, 4.75, 13.5, col="red")
-segments(4.75, 13.5, log.or, 13.5, col="red")
-arrows(log.or, 13.5, log.or, 13, col="red", length=0.05)
+display_table(4, i=2)
+```
+
+third,
+
+```{r log-or3, echo=FALSE}
+forest(bcg_fixed_effects, cex=0.8)
+display_table(4, i=3)
+```
+
+fourth,
+
+```{r log-or4, echo=FALSE}
+forest(bcg_fixed_effects, cex=0.8)
+display_table(4, i=4)
+```
+
+fifth,
+
+```{r log-or5, echo=FALSE}
+forest(bcg_fixed_effects, cex=0.8)
+display_table(4, i=5)
+```
+
+sixth,
+
+```{r log-or6, echo=FALSE}
+forest(bcg_fixed_effects, cex=0.8)
+display_table(4, i=6)
+```
+
+seventh,
+
+```{r log-or7, echo=FALSE}
+forest(bcg_fixed_effects, cex=0.8)
+display_table(4, i=7)
+```
+
+eighth,
+
+```{r log-or8, echo=FALSE}
+forest(bcg_fixed_effects, cex=0.8)
+display_table(4, i=8)
+```
+
+ninth,
+
+```{r log-or9, echo=FALSE}
+forest(bcg_fixed_effects, cex=0.8)
+display_table(4, i=9)
+```
+
+tenth,
+
+```{r log-or10, echo=FALSE}
+forest(bcg_fixed_effects, cex=0.8)
+display_table(4, i=10)
+```
+
+eleventh,
+
+```{r log-or11, echo=FALSE}
+forest(bcg_fixed_effects, cex=0.8)
+display_table(4, i=11)
+```
+
+twelvth,
+
+```{r log-or12, echo=FALSE}
+forest(bcg_fixed_effects, cex=0.8)
+display_table(4, i=12)
+```
+
+and thirteenth studies.
+
+```{r log-or13, echo=FALSE}
+forest(bcg_fixed_effects, cex=0.8)
+display_table(4, i=13)
 ```
 
 The variance of the log odds ratio is approximately
@@ -99,29 +260,101 @@ $\frac{1}{n_{11}} + \frac{1}{n_{12}} + \frac{1}{n_{21}} + \frac{1}{n_{22}}$
 where n11, n12, etc. are the count of each cell in the two by two table. For the first study, you get
 
 ```{r v, echo=FALSE}
-var <- round(sum(1/v), 3)
-cat(paste0(paste0("1/", v, collapse=" + "), " = ", var))
+forest(bcg_fixed_effects, cex=0.8)
+display_table(5)
 ```
 
 The approximate confidence interval for the log odds is
 
 ```{r ci, echo=FALSE}
-lo <- round(log.or-1.96*sqrt(var), 3)
-hi <- round(log.or+1.96*sqrt(var), 3)
-cat(paste0(log.or, "-1.96*sqrt(", var,")=", lo))
-cat(paste0(log.or, "+1.96*sqrt(", var,")=", hi))
+forest(bcg_fixed_effects, cex=0.8)
+display_table(6)
 ```
 
-These limits include the value of zero, so this particular study failed to reject the null hypothesis.
+Notice that this confidence interval includes the value of zero, so this particular study did not reject the null hypothesis.
 
-```{r forest-ci1}
+Repeath this calculation for the second,
+
+```{r ci2, echo=FALSE}
 forest(bcg_fixed_effects, cex=0.8)
-segments(5.75, 12.7, 5.75, 12.5, col="red")
-segments(5.75, 12.5, lo, 12.5, col="red")
-arrows(lo, 12.5, lo, 13, col="red", length=0.05)
-segments(6.75, 13.3, 6.75, 13.5, col="red")
-segments(6.75, 13.5, hi, 13.5, col="red")
-arrows(hi, 13.5, hi, 13, col="red", length=0.05)
+display_table(6, i=2)
+```
+
+third,
+
+```{r ci3, echo=FALSE}
+forest(bcg_fixed_effects, cex=0.8)
+display_table(6, i=3)
+```
+
+fourth,
+
+```{r ci4, echo=FALSE}
+forest(bcg_fixed_effects, cex=0.8)
+display_table(6, i=4)
+```
+
+fifth,
+
+```{r ci5, echo=FALSE}
+forest(bcg_fixed_effects, cex=0.8)
+display_table(6, i=5)
+```
+
+sixth,
+
+```{r ci6, echo=FALSE}
+forest(bcg_fixed_effects, cex=0.8)
+display_table(6, i=6)
+```
+
+seventh,
+
+```{r ci7, echo=FALSE}
+forest(bcg_fixed_effects, cex=0.8)
+display_table(6, i=7)
+```
+
+eighth,
+
+```{r ci8, echo=FALSE}
+forest(bcg_fixed_effects, cex=0.8)
+display_table(6, i=8)
+```
+
+ninth,
+
+```{r ci9, echo=FALSE}
+forest(bcg_fixed_effects, cex=0.8)
+display_table(6, i=9)
+```
+
+tenth,
+
+```{r ci10, echo=FALSE}
+forest(bcg_fixed_effects, cex=0.8)
+display_table(6, i=10)
+```
+
+eleventh,
+
+```{r ci11, echo=FALSE}
+forest(bcg_fixed_effects, cex=0.8)
+display_table(6, i=11)
+```
+
+twelvth,
+
+```{r ci12, echo=FALSE}
+forest(bcg_fixed_effects, cex=0.8)
+display_table(6, i=12)
+```
+
+and thirteenth studies.
+
+```{r ci13, echo=FALSE}
+forest(bcg_fixed_effects, cex=0.8)
+display_table(6, i=13)
 ```
 
 The log odds ratios and variances for the full data set are listed below.
@@ -134,16 +367,21 @@ bcg_or <- escalc(
 b <- data.frame(
   y=round(bcg_or$yi,2), 
   w=round(1/bcg_or$vi,1))
-b
-y <- round(sum(b$y*b$w)/sum(b$w), 2)
+c <- b
+names(c) <- c("log or", "var")
+c
 ```
 
 The overall estimate is a weighted average of the individual study estimates.
 
+$\hat{\theta}=\frac{\Sigma \hat{\theta}_i w_i}{\Sigma w_i}$
+
 ```{r overall-weighted-sum}
+theta_hat <- round(sum(b$y*b$w)/sum(b$w), 2)
 l <- "("
 r <- ")"
 l %>%
+  paste0(l) %>%
   paste0(b$y[1]) %>%
   paste0(r, l) %>%
   paste0(b$w[1]) %>%
@@ -155,67 +393,81 @@ l %>%
   paste0(b$y[13]) %>%
   paste0(r, l) %>%
   paste0(b$w[13]) %>%
-  paste0(r, "=") %>%
-  paste0(y) %>%
-  cat
-```
-
-```{r overall}
-forest(bcg_fixed_effects, cex=0.8)
-segments(4.75, -0.7, 4.75, -0.5, col="red")
-segments(4.75, -0.5, y, -0.5, col="red")
-arrows(y, -0.5, y, -1, col="red", length=0.05)
-```
-
-```{r overall-std-error}
-v <- round(1/sum(b$w), 5)
-lo <- round(y-1.96*sqrt(v), 2)
-hi <- round(y+1.96*sqrt(v), 2)
-```
-
-The variance of the overall estimate is simply the reciprocal of the sum of the weights.
-
-```{r display-se-formula}
-paste0("1/", l) %>%
+  paste0(r, r) -> num_calc
+l %>%
   paste0(b$w[1]) %>%
-  paste0("+") %>%
-  paste0(b$w[2]) %>%
-  paste0("+ ... +") %>%
-  paste0(b$w[13]) %>% 
-  paste0(r, "=") %>%
-  paste0(v) %>%
-  cat
+  paste0("+", b$w[2]) %>%
+  paste0("+...+") %>%
+  paste0(b$w[13]) %>%
+  paste0(r) -> den_calc
+
+d1 <- -4.9
+d2 <- d1 + 3.3
+d3 <- d2 + 0.8
+d4 <- d3 + 0.5
+d5 <- d4 + 0.7
+d6 <- 7.3
+
+y1 <- 15.8
+y2 <- y1 - 0.5
+y3 <- y2 - 0.5
+y4 <- -0.5
+y5 <- y4 - 0.5
+y6 <- y5 - 0.5
+
+display_overall <- function(step=1, accent="red") {
+  co <- ifelse(step==1, accent, "black")
+  text(d1, y1, num_calc, cex=0.8, adj=0.5, col=co)
+  text(d1, y3, den_calc, cex=0.8, adj=0.5, col=co)
+  segments(d1-3, y2, d1+3, y2, col=co)
+  text(d2, y2, "=", cex=0.8, adj=0.5, col=co)
+  text(d3, y1, round(sum(b$y*b$w), 1), cex=0.8, col=co)
+  text(d3, y3, round(sum(b$w), 1), cex=0.8, col=co)
+  segments(d3-0.4, y2, d3+0.4, y2, col=co)
+  text(d4, y2, paste0("= ", theta_hat), cex=0.8, adj=0, col=co)
+  if (step==1) {
+    segments(d5, y3, d5, y4, col=co)
+    segments(theta_hat, y4, 5.1, y4, col=co)
+    segments(4.3, y6, 5.1, y6, col=co)
+    segments(4.3, y4, 4.3, y6, col=co)
+    segments(5.1, y4, 5.1, y6, col=co)
+    arrows(theta_hat, y4, theta_hat, y5, length=0.05, col=co)
+  }
+  if (step==1) return(invisible(1))
+
+  co <- ifelse(step==2, accent, "black")
+  lo <- round(theta_hat - 1.96*sqrt(1/sum(b$w)), 2)
+  hi <- round(theta_hat + 1.96*sqrt(1/sum(b$w)), 2)
+  ci_calc <- paste0(theta_hat, " ± 1.96 sqrt (1/", round(sum(b$w), 1), ") = ", lo, " to ", hi)
+  text(d6, y2, ci_calc, cex=0.8, adj=1, col=co)
+  if (step==2) {
+    segments(6.2, y3, 6.2, y4, col=accent)
+    segments(7.1, y4, lo, y4, col=accent)
+    arrows(lo, y4, lo, y5, length=0.05, col=accent)
+    arrows(hi, y4, hi, y5, length=0.05, col=accent)
+    segments(5.2, y6, 7.1, y6, col=accent)
+    segments(5.2, y4, 5.2, y6, col=accent)
+    segments(7.1, y4, 7.1, y6, col=accent)
+  }
+  return(invisible(2))
+}
 ```
 
 
-The confidence limits for the overall estimate are
-
-```{r overall-ci}
-y %>%
-  paste0("-1.96 sqrt", l) %>%
-  paste0(v)               %>%
-  paste0(r, "=")          %>%
-  paste0(lo)              %>%
-  cat
-
-y %>%
-  paste0("+1.96 sqrt", r) %>%
-  paste0(v)               %>%
-  paste0(r, "=")          %>%
-  paste0(hi)              %>%
-  cat
-```
-
-```{r overall-ci-plot}
+```{r overall_est}
 forest(bcg_fixed_effects, cex=0.8)
-segments(5.75, -1.3, 5.75, -1.5, col="red")
-segments(5.75, -1.5, lo-1, -1.5, col="red")
-segments(lo-1, -1.5, lo-1, -1, col="red")
-arrows(lo-1, -1, lo, -1, col="red", length=0.05)
-segments(6.75, -0.7, 6.75, -0.5, col="red")
-segments(6.75, -0.5, hi+1, -0.5, col="red")
-segments(hi+1, -0.5, hi+1, -1, col="red")
-arrows(hi+1, -1, hi, -1, col="red", length=0.05)
+display_overall(1)
+```
+
+The variance of the overall estimate is simply the reciprocal of the sum of the weights. 
+
+$V(\hat{\theta})=\frac{1}{\Sigma w_i}$
+
+This is just the fraction seen above, but with the nuermator replaced by 1.
+
+```{r overall_ci}
+forest(bcg_fixed_effects, cex=0.8)
+display_overall(2)
 ```
 
 The relative weights given to each study are listed below.
