@@ -205,46 +205,28 @@ The unitless quantities often used in meta-analysis make assessment of practical
 
 ## Were all of the apples rotten?
 
-Meta-analysis cannot "make a silk purse out of a sow's ear"
+* Jadad (0-5 points total)
+  + randomized? (0-2 points)
+  + blinding (0-2 points)
+  + information on dropouts (0-1 points)
 
-Quality scores
-
-* Jadad
-
-* PEDro
+* PEDro (0-11 points total)
+  + randomization and baseline balance (0-3 points)
+  + blinding (0-3 points)
+  + dropouts, intention to treat (0-2 points)
+  + completeness of reporting (0-3 points)
 
 <div class="notes">
 
-Meta-analysis cannot remove the biases and imprecision associated with poor research methodologies. If all of the studies have "issues" then a meta-analysis will amplify those issues.
+Meta-analysis cannot "make a silk purse out of a sow's ear." Meta-analysis cannot remove the biases and imprecision associated with poor research methodologies. If all of the studies have "issues" then a meta-analysis will amplify those issues.
+
+There are two validated scales for measuring the quality of individual studies in a meta-analysis. Even though these scores are commonly used, they have endured a lot of criticism
 
 You can assess quality issues by limiting studies based on scoring systems like Jadad or PEDro or by weighting studies based on these scores. We'll talk about this a bit later.
 
-1. Was the study described as randomized (this includes words such as randomly, random, and randomisation)? (+1 Point)
-2. Was the method used to generate the sequence of randomisation described and appropriate (table of random numbers, computer-generated, etc)? (+1 Point)
-3. Was the study described as double blind? (+1 Point)
-4. Was the method of double blinding described and appropriate (identical placebo, active placebo, dummy, etc)? (+1 Point)
-5. Was there a description of withdrawals and dropouts? (+1 Point)
-6. Deduct one point if the method used to generate the sequence of randomisation was described and it was inappropriate (patients were allocated alternately, or according to date of birth, hospital number, etc)
-7. Deduct one point if the study was described as double blind but the method of blinding was inappropriate (e.g., comparison of tablet vs. injection with no double dummy).
+The Jadad score is quite common, and it looks at three issues: randomization, blinding, and dropouts.
 
-1. eligibility criteria were specified no, yes where:
-2. subjects were randomly allocated to groups (in a crossover study, subjects
-were randomly allocated an order in which treatments were received) no, yes where:
-3. allocation was concealed no, yes where:
-4. the groups were similar at baseline regarding the most important prognostic
-indicators no, yes where:
-5. there was blinding of all subjects no, yes where:
-6. there was blinding of all therapists who administered the therapy no, yes where:
-7. there was blinding of all assessors who measured at least one key outcome no, yes where:
-8. measures of at least one key outcome were obtained from more than 85%
-of the subjects initially allocated to groups no, yes where:
-9. all subjects for whom outcome measures were available received the
-treatment or control condition as allocated or, where this was not the case,
-data for at least one key outcome was analysed by “intention to treat” no, yes where:
-10. the results of between-group statistical comparisons are reported for at least one
-key outcome no, yes where:
-11. the study provides both point measures and measures of variability for at
-least one key outcome no, yes where:
+The PEDro score is much longer. It covers not just randomization, but concealed allocation and baseline balance of important covariates. There are three questions about blinding: blinding of the subjects, blinding of the therapists who are offering the intervention, and blinding of anyone assessing the patient's outcomes. The PEDro score also looks at dropout rates, intention to treat analysis, and completeness of reporting on eligibility critera, statistical tests, and confidence intervals.
 
 </div>
 
@@ -299,11 +281,37 @@ Let's talk about data analysis. This talk will cover several different statistic
 
 </div>
 
+## Software
+
+* R: see the CRAN Task View: Meta-Analysis 
+
+* SAS: metaanal macro, various SAS conference presentations
+
+* Stata: see Meta-Analysis in Stata: An Updated Collection from the Stata Journal, Second Edition
+
+<div class="notes">
+
+I will be using a package, metafor, in R, but there are many other R pacakges as well. Meta-analysis is not built into the SAS system. There is a pretty nice macro, metaanal, and you can find other information in various SAS conference presentations.
+
+Stata also does not have a formal command in its system, but there is a very nice book that will tell you all about this.
+
+</div>
+
 ## BCG description
 
 "Results from 13 studies examining the effectiveness of the Bacillus Calmette-Guerin (BCG) vaccine against tuberculosis."
 
-Available at https://rdrr.io/cran/metafor/man/dat.colditz1994.html
+Available at the metafor project page in [html format](http://www.metafor-project.org/doku.php/tips:assembling_data_or).
+
+<div class="notes">
+
+I'll be showing some meta-analysis statistics and graphs for two studies. The first study is an examination of the tuberculosis vaccine. In these studies, treated patients were given the vaccine and untreated patients were given a placebo. A test was run later and a positive result means that the vaccine failed. I presume a positive result means that the patient came down with TB and this was confirmed by a positive lab test. Thanksfully, the rate of positive results was small both in the treated and untreated groups.
+
+This data helps to illustrate how to conduct a meta-analysis on a binary outcome.
+
+This data set comes with the metafor package in R, but you can get access to the raw data if you want to run the analysis in a different software package.
+
+</div>
 
 ## BCG data, first three columns
 
@@ -311,15 +319,38 @@ Available at https://rdrr.io/cran/metafor/man/dat.colditz1994.html
 bcg[1:6, c("trial", "author", "year")]
 ```
 
+<div class="notes">
+
+This lists the first three columns of the BCG data, but only for the first six studies. There were thirteen studies total. These columns identify which study was which.
+
+</div>
+
+
 ## BCG data, last six columns
 
 ```{r bcg-list2}
 bcg[1:6, c("tpos", "tneg", "cpos", "cneg", "ablat", "alloc")]
 ```
 
+<div class="notes">
+
+The remaining columns give the number of positive and negative results in the treatment group and in the control group. The "ablat" variable is a measure of the absolute value of the latitude at which the study was done. A large value here means the study was conducted at a location far from the equator.
+
+</div>
+
 ## LOS description
 
-Results from 9 studies on the length of the hospital stay of stroke patients under specialized care and under conventional/routine (non-specialist) care.
+"Results from 9 studies on the length of the hospital stay of stroke patients under specialized care and under conventional/routine (non-specialist) care."
+
+Available at the metafor project page in [html format](http://www.metafor-project.org/doku.php/tips:assembling_data_smd)
+
+<div class="notes">
+
+The second analysis looks at a specialized care model for stroke patients. This data set has a continuous outcome (length of stay). The analysis of continuous outcome data is slightly different.
+
+This data set comes with the metafor package in R, but you can get access to the raw data if you want to run the analysis in a different software package.
+
+</div>
 
 ## LOS data, first two columns
 
@@ -327,11 +358,23 @@ Results from 9 studies on the length of the hospital stay of stroke patients und
 los[1:6, c("study", "source")]
 ```
 
+<div class="notes">
+
+The first two columns identify the particular study. I am only showing the first six rows out of nine rows total.
+
+</div>
+
 ## LOS data, last six columns
 
 ```{r los-list-2}
 los[1:6, c("n1i", "m1i", "sd1i", "n2i", "m2i", "sd2i")]
 ```
+
+<div class="notes">
+
+The remaining columns show the sample size (designative by the letter n), the mean length of stay (designated by the letter m) and the standard deviations (designated by the letters sd). The number "1" refers to the treatment group (specialized care) and "2" refers to the control group (normal care).
+
+</div>
 
 ## The standardized mean difference (SMD)
 
@@ -409,6 +452,8 @@ or
 
 If there is heterogeneity within a study, you can use the square root of the average the two variances or the square root of the control group variance.
 
+I kind of like the second choice. How much better is the treatment relative to the control, in units of measurement relevant to the variation of the control group. Assuming normality, a full standard deviation means that the treatment median is at the 84th percentile of the control group.
+
 </div>
 
 ## Adjusting for pairing
@@ -431,13 +476,11 @@ For paired data, use the standard deviation of the differences, if it reported, 
 
 ## Analyzing proportions
 
-* Odds ratio
-
-* Relative risk
-
-* Risk difference
-
-Odds ratios and relative risk are always analyzed and displayed on a log scale.
+* Commonly used summary measures
+  + Odds ratio
+  + Relative risk
+  + Risk difference
+* Odds ratios and relative risk are always analyzed and displayed on a log scale.
 
 <div class="notes">
 
@@ -503,6 +546,14 @@ los_smd <- escalc(
 los_smd[1:6, -(1:2)]
 ```
 
+<div class="notes">
+
+This table shows the calculated values for the SMD (standardized mean difference), designated by "yi" and the calculated variance for the SMD, designated by "vi."
+
+Again, these results are only the first six.
+
+</div>
+
 ## Odds ratios for the BCG data
 
 ```{r escalc-or}
@@ -513,11 +564,23 @@ bcg_or <- escalc(
 bcg_or[1:6, c("tpos", "tneg", "cpos", "cneg", "yi", "vi")]
 ```
 
+<div class="notes">
+
+This table shows the calculated values for the log odds ratio (yi) and the estimated variance of the log odds ratio (vi). This table only shows the first six studies.
+
+</div>
+
 ## Fixed effects model
+
+* For the SMD
 
  $V(\hat \theta_i) \approx \frac{1}{n_T}+\frac{1}{n_C}$
  
+* For log odds ratio
+ 
  $\approx \frac{1}{n_{11}} + \frac{1}{n_{12}} + \frac{1}{n_{21}} + \frac{1}{n_{22}}$
+ 
+* For both, weight is inverse of the variance
  
  $w_i = \frac{1}{V(\hat \theta_i)}$ 
  
@@ -531,13 +594,21 @@ The variance of the standardized mean difference is approximated by a simple fun
 
 ## Fixed effects model (cont'd)
 
+* Overall estimate
+
  $\hat \theta = \frac{\Sigma w_i \hat \theta_i}{\Sigma w_i}$
  
+* Variance of the overall estimate
+ 
  $V(\hat \theta) = \frac{1}{\Sigma w_i}$ 
+ 
+* Test statistic
 
  $\frac{\hat \theta^2}{V(\hat \theta)} \sim \chi^2(1)$ 
 
 <div class="notes">
+
+At this point, both methods re-converge.
 
 The overall estimate, theta-hat is a weighted average of the individual study estimates. If you take the square of the overall estimate and divide by the estimated variance of the overall estimate, you get a statistic for testing the hypothesis that the overall mean difference is zero.
 
@@ -547,11 +618,15 @@ Compare this test statistic to a chi-squared distribution with 1 degree of freed
 
 ## Cochrane's Q
 
-Test of homogeneity
+* Test of homogeneity
 
  $Q = \Sigma w_i(\hat \theta_i - \hat \theta)^2$
+ 
+* Distribution
 
  $Q \sim \chi^2(k-1)$
+ 
+* Alterantive: I-squared
 
  $I^2 = 100\frac{Q-(k-1)}{Q}$
 
@@ -567,15 +642,21 @@ I-squared is a measure of the degree of heterogeneity that ranges between 0 and 
 
 ## Random effects model
 
-Rough approximation
+* Rough approximation
 
  $\hat \tau^2 = max(0, Q - (k-1))$
+ 
+* Reweight the studies 
 
  $W_i^* = \frac{1}{V(\hat \theta_i) + \hat \tau^2}$
 
 <div class="notes">
 
-You can fit a random effects model using standard software like PROC MIXED in SAS. The random effects model assumes that each study has an extra source of random variation, caused by the numerous small differences that occur from one study to another. The weights in a random effects meta-analysis are closer to one another, much closer to one another when the variance componet (tau-hat squared) is large.
+The random effects model assumes that each study has an extra source of random variation, caused by the numerous small differences that occur from one study to another. The weights in a random effects meta-analysis are closer to one another, much closer to one another when the variance componet (tau-hat squared) is large.
+
+I like the random effects model. I like it a lot. But there are lots of people who don't like the random effects model. The concern is that there is a normality assumption for the random effects model that is rarely met in practice. True enough, but I'd rather make an assumption about the normality of the random effects than to assume that the random effects are all zero, which is what the fixed effects model does.
+
+I view the random effects model as akin to allowing for a random center effect in a multi-center clinical trial.
 
 </div>
 
@@ -590,7 +671,25 @@ los_random_effects <- rma(
 los_random_effects_text <-
   capture.output(los_random_effects)
 cat(los_random_effects_text[12:15], sep="\n")
+los_random_effects$beta %>%
+  as.numeric %>%
+  round(3) -> los_smd
+los_random_effects$pval %>%
+  as.numeric %>%
+  round(3) -> los_pval
+los_random_effects$ci.lb %>%
+  round(2) -> los_lo
+los_random_effects$ci.ub %>%
+  round(2) -> los_hi
 ```
+
+<div class="notes">
+
+I normally don't show unedited computer output to the people I work with, but you all can handle this. 
+
+Notice that the overall estimate for LOS is `r los_smd`, about a half a standard deviation away from zero. The p-value is large (`r los_pval`) and the confidence interval (`r los_lo` to `r los_hi`) includes the value of zero. You would conclude that the overall effect of specialized care on LOS is not statistically significant.
+
+</div>
 
 ## Random effects model for BCG data
 
@@ -603,19 +702,60 @@ bcg_random_effects <- rma(
 bcg_random_effects_text <-
   capture.output(bcg_random_effects)
 cat(bcg_random_effects_text[12:15], sep="\n")
+
+bcg_random_effects$beta %>%
+  as.numeric %>%
+  round(3) -> bcg_log_or
+bcg_random_effects$beta %>%
+  as.numeric %>%
+  exp %>%
+  round(2) -> bcg_odds_ratio
+bcg_random_effects$pval %>%
+  as.numeric %>%
+  round(5) -> bcg_pval
+bcg_random_effects$ci.lb %>%
+  round(2) -> bcg_lo
+bcg_random_effects$ci.ub %>%
+  round(2) -> bcg_hi
 ```
+
+<div class="notes">
+
+Here are the results for the BCG vaccine. The overall log odds ratio is `r bcg_log_or`. Take the anti-log to get an odds ratio of `r bcg_odds_ratio`. The p-value is small (less than 0.0001) and the confidence interval (`r bcg_lo` to `r bcg_hi`) does not contain the value of zero. There is a statistically significant effect of the vaccine.
+
+</div>
 
 ## Test of homogeneity for the LOS data
 
 ```{r homogeneity-los, comment=""}
 cat(los_random_effects_text[4:10], sep="\n")
+los_random_effects$QE %>%
+  round(1) -> los_q
+los_random_effects$QE %>%
+  round(0) -> los_i2
 ```
+
+<div class="notes">
+
+There is substantial evidence of heterogeneity. Cochran's Q is `r los_q` which is a whole lot bigger than its degrees of freedom. The value of I-squared is `r los_i2`% which is very close to 100%. So we have strong evidence of heterogeneity.
+
+</div>
 
 ## Test of homogeneity for the BCG data
 
 ```{r homogeneity-bcg, comment=""}
 cat(bcg_random_effects_text[4:10], sep="\n")
+bcg_random_effects$QE %>%
+  round(1) -> bcg_q
+bcg_random_effects$I2 %>%
+  round(0) -> bcg_i2
 ```
+
+<div class="notes">
+
+There is substantial evidence of heterogeneity in this study as well. Cochran's Q is `r bcg_q` which is a whole lot bigger than its degrees of freedom. The value of I-squared is `r bcg_i2`% which is very close to 100%. So we have strong evidence of heterogeneity.
+
+</div>
 
 ## Forest plot for the LOS data
 
@@ -625,6 +765,18 @@ forest(
   cex=0.8)
 ```
 
+<div class="notes">
+
+The Forest plot displays the results of the individual studies and the overall estimate. THe first study (Edinburgh) has a narrow confidence interval which excludes that value of 0, so it, biy itself, is statistically significant. The second study (Orpington-Mild) has a wider confidence interval which includes zero, but the effect size is comparable to the first study. The next two studies, however, are outliers. They are about two standard deviations below the mean. Note that these are the moderate and severe arms of the Orpington study. You might want to look at the other studies to see if they can be characterized as "Mild" since none of them comes anywhere close to the moderate and severe arms of the Orpington study.
+
+The overall effect is about a half a standard deviation and the confidence interval includes zero (just barely).
+
+Notice the little squares in the middle of each individual interval. The size indicates how much precision each study has. The larger the square, the greater the precision.
+
+Note: you want to avoid vote counting, noting which intervals indicate statistical significance for the individual studies. This is a simplistic and potentially misleading way to summarize the results of the studies.
+
+</div>
+
 ## Forest plot for the BCG data
 
 ```{r forest_bcg}
@@ -633,17 +785,47 @@ forest(
   cex=0.8)
 ```
 
+<div class="notes">
+
+This is the Forest plot for the BCG vaccine study. The first interval (Aronson) is wide and includes the value of zero. The second interval (Ferguson and Simes) is just a bit narrower and a bit further away from zero, and the confidence interval does exclude the value of zero.
+
+The overall estimate is -0.75, and is statistically significant.
+
+</div>
+
 ## Funnel plot for the LOS data
 
 ```{r funnel_los}
 funnel(los_random_effects)
 ```
 
+<div class="notes">
+
+The funnel plot is an attempt to see if there is publication bias.
+
+Larger studies tend to have smaller standard errors and appear near the top of the graph. Smaller studies tend to have larger standard errors and tend to appear near the bottom of the graph.
+
+The thought is that the unpublished studies tend to be small negative studies. So if notice a paucity of studies in the lower right corner of this graph, this is evidence, at least according to some of publication bias.
+
+In this plot, there are four to seven small studies and they seem to be evenly distributed. So I would interpret this funnel plot as not supporting the existence of publication bias.
+
+A lot of people dislike the funnle plt because it is subjective and there is some anecdotal evidence that the funnel plot will sometimes miss evidence of publication bias.
+
+The funnel is drawn at plus or minus two standard errors, and quite a few points lie outside this funnel on both sides. This is an indirect measure of heterogeneity.
+
+</div>
+
 ## Funnel plot for the BCG data
 
 ```{r funnel_bcg}
 funnel(bcg_random_effects)
 ```
+
+<div class="notes">
+
+This funnel plot is more troubling. Notice that among the five smallest studies, four are on the left side of the graph and only one on the right hand side. So this graph suggests that there might be publication bias.
+
+</div>
 
 ## L'Abbe plot
 
@@ -656,11 +838,23 @@ bcg_risk_difference <- rma(
 labbe(bcg_risk_difference)
 ```
 
+<div class="notes">
+
+The L'Abbe plot is a graph that tries to examine heterogeneity. The proportion in the treatment group appears on the X axis and the proportion in the control group appears on the Y axis. The size of the circles are proportional to the precision of the study, with larger circles implying more precision. It's a bit difficult to read, but the large studies tend to have very low control rates.
+
+</div>
+
 ## L'Abbe plot on log odds scale
 
 ```{r labbe-plot-log}
 labbe(bcg_random_effects)
 ```
+
+<div class="notes">
+
+Rather than the proportions, you can plot the log odds and this makes the pattern more apparent. Studies with low control rates (presumably studies in areas with low risk of TB) tend to be negative and studies with high control rates tend to be positive.
+
+</div>
 
 ## Meta regression
 
@@ -671,11 +865,23 @@ meta_regression_bcg_text <-
 cat(meta_regression_bcg_text[13:21], sep="\n")
 ```
 
+<div class="notes">
+
+There were two possible covariates in the vaccine study, ablat (distance from the equator) and year of the study. These both appear to be statistically significant. Studies further from the equator tend to have more negative effects (remember that a negative value favors the vaccine). The year of the study appears to have a positive effect. Earlier studies are more likely to show an effect than later studies.
+
+</div>
+
 ## Change in heterogeneity for meta regression model
 
 ```{r change-in-heterogeneity, comment=""}
 cat(meta_regression_bcg_text[4:11], sep="\n")
 ```
+
+<div class="notes">
+
+Notice that a substantial amount of heterogeneity remains, even after accounting for the two covariates.
+
+</div>
 
 ## Publication guidelines
 
@@ -687,25 +893,62 @@ cat(meta_regression_bcg_text[4:11], sep="\n")
 
   + QUality Of Reporting Of Meta-analysis
   
+<div class="notes">
+
+There are two sets of guidelines for critical appraisal of meta-analytic studies. The more recent guidance is PRISMA.
+
+</div>
+  
+  
 ## PRISMA flow diagram
 
 ![Top half of PRISMA flow diagram](../images/prisma_flow_top.png)
+
+<div class="notes">
+
+PRISMA recommends a flow chart that shows what happened during the search process. The top half descirbes the identification and preliminary screening steps.
+
+</div>
 
 ## PRISMA flow diagram
 
 ![Bottom half of PRISMA flow diagram](../images/prisma_flow_bottom.png)
 
+<div class="notes">
+
+The bottom half shows the eligibility criteria and the number of papers that finally get included in the analysis.
+
+</div>
+
 ## PRISMA checklist, part 1
 
 ![Checklist for PRISMA](../images/prisma_checklist_1.png)
+
+<div class="notes">
+
+PRISMA also includes a checklist. The first few items cover the title, abstract, and introduction.
+
+</div>
 
 ## PRISMA checklist, part 2
 
 ![Checklist for PRISMA](../images/prisma_checklist_2.png)
 
+<div class="notes">
+
+PRISMA has quite a few elements relating to methods.
+
+</div>
+
 ## PRISMA checklist, part 3
 
 ![Checklist for PRISMA](../images/prisma_checklist_3.png)
+
+<div class="notes">
+
+The checklist also covers the completeness of the results section of the paper you are trying to appraise.
+
+</div>
 
 ## PRISMA checklist, part 4
 
@@ -730,6 +973,14 @@ cat(meta_regression_bcg_text[4:11], sep="\n")
 * Reporting
 
   + PRISMA flow diagram and checklist
+  
+* https://github.com/pmean/introduction-meta-analysis
+
+<div class="notes">
+
+We talked about design, analysis, and critical appraisal. Wow! That's a lot to cover in one hour. 
+
+</div>
 
 ```{r save-everything, results=FALSE}
 save.image(file="../data/intro.RData")

@@ -9,7 +9,7 @@ output: html_document
 suppressMessages(suppressWarnings(library(knitr)))
 suppressMessages(suppressWarnings(library(magrittr)))
 suppressMessages(suppressWarnings(library(metafor)))
-opts_chunk$set(echo=FALSE, fig.width=6.5, fig.height=4.5)
+opts_chunk$set(echo=FALSE, fig.width=6.5, fig.height=3.5) # was ht=4.5
 bcg <- get(data(dat.bcg))
 ```
 
@@ -45,6 +45,7 @@ bcg_fixed_effects <- rma(
 bcg_fixed_effects_text <-
   capture.output(bcg_fixed_effects)
 cat(bcg_fixed_effects_text, sep="\n")
+par(mar=c(3.6, 0, 0, 0))
 forest(bcg_fixed_effects, cex=0.8)
 ```
 
@@ -144,112 +145,112 @@ display_table <- function(step, accent="red", i=1) {
   }
   if (step==6) return(invisible(6))
 }
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(1)
 ```
 
 Calculate the odds for each row.
 
 ```{r odds, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(2)
 ```
 
 The ratio of these two odds is the odds ratio.
 
 ```{r or, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(3)
 ```
 
 The underlying distribution of the odds ratio is almost always skewed right and bounded below by zero, so you should consider a log transformation. This is the center of the confidence interval for the first study
 
 ```{r log-or, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(4)
 ```
 
 Repeat these calculations for the second,
 
 ```{r log-or2, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(4, i=2)
 ```
 
 third,
 
 ```{r log-or3, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(4, i=3)
 ```
 
 fourth,
 
 ```{r log-or4, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(4, i=4)
 ```
 
 fifth,
 
 ```{r log-or5, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(4, i=5)
 ```
 
 sixth,
 
 ```{r log-or6, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(4, i=6)
 ```
 
 seventh,
 
 ```{r log-or7, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(4, i=7)
 ```
 
 eighth,
 
 ```{r log-or8, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(4, i=8)
 ```
 
 ninth,
 
 ```{r log-or9, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(4, i=9)
 ```
 
 tenth,
 
 ```{r log-or10, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(4, i=10)
 ```
 
 eleventh,
 
 ```{r log-or11, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(4, i=11)
 ```
 
 twelvth,
 
 ```{r log-or12, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(4, i=12)
 ```
 
 and thirteenth studies.
 
 ```{r log-or13, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(4, i=13)
 ```
 
@@ -260,14 +261,14 @@ $\frac{1}{n_{11}} + \frac{1}{n_{12}} + \frac{1}{n_{21}} + \frac{1}{n_{22}}$
 where n11, n12, etc. are the count of each cell in the two by two table. For the first study, you get
 
 ```{r v, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(5)
 ```
 
 The approximate confidence interval for the log odds is
 
 ```{r ci, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(6)
 ```
 
@@ -276,84 +277,84 @@ Notice that this confidence interval includes the value of zero, so this particu
 Repeath this calculation for the second,
 
 ```{r ci2, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(6, i=2)
 ```
 
 third,
 
 ```{r ci3, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(6, i=3)
 ```
 
 fourth,
 
 ```{r ci4, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(6, i=4)
 ```
 
 fifth,
 
 ```{r ci5, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(6, i=5)
 ```
 
 sixth,
 
 ```{r ci6, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(6, i=6)
 ```
 
 seventh,
 
 ```{r ci7, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(6, i=7)
 ```
 
 eighth,
 
 ```{r ci8, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(6, i=8)
 ```
 
 ninth,
 
 ```{r ci9, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(6, i=9)
 ```
 
 tenth,
 
 ```{r ci10, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(6, i=10)
 ```
 
 eleventh,
 
 ```{r ci11, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(6, i=11)
 ```
 
 twelvth,
 
 ```{r ci12, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(6, i=12)
 ```
 
 and thirteenth studies.
 
 ```{r ci13, echo=FALSE}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_table(6, i=13)
 ```
 
@@ -455,7 +456,7 @@ display_overall <- function(step=1, accent="red") {
 
 
 ```{r overall_est}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_overall(1)
 ```
 
@@ -466,7 +467,7 @@ $V(\hat{\theta})=\frac{1}{\Sigma w_i}$
 This is just the fraction seen above, but with the nuermator replaced by 1.
 
 ```{r overall_ci}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 display_overall(2)
 ```
 
@@ -486,7 +487,7 @@ x
 The relative weights determine the size of the squares in the forest plot.
 
 ```{r squares}
-forest(bcg_fixed_effects, cex=0.8)
+par(mar=c(3.6, 0, 0, 0)); forest(bcg_fixed_effects, cex=0.8)
 text(b$y, (13:1)+0.5, x$rel_wt[-14], cex=0.5, col="red") 
 ```
 
@@ -505,6 +506,33 @@ The forest plot provides information about individual studies, and how they rela
 4. Look at the relative weights given to each study. Does one study tend to dominate the findings?
 
 5. Look for evidence of heterogeneity. This can occur several ways, but the easiest source of heterogeneity is a bimodal pattern in the studies. Most of the studies might show little or no effect, for example, but a smaller group of studies might cluster in a region of a strong effect. If you are familiar with the individual studies, ask yourself if there is a feature that is unique to the outlying cluster of studies.
+
+### Funnel plot
+
+```{r funnel}
+b$se <- round(1/sqrt(b$w), 3)
+theta_hat <- -0.44
+par(mar=c(3.9, 3.9, 0, 0))
+draw_funnel <- function() {
+  funnel(bcg_fixed_effects)
+  text(0.9, 0.04, expression(hat(theta[i])), adj=1, cex=0.8)
+  text(1.3, 0.04, "Std.Err.", adj=1, cex=0.8)
+  for (i in 1:13) {
+    text(0.9, 0.04*(i+1), b$y[i], adj=1, cex=0.8)
+    text(1.3, 0.04*(i+1), b$se[i], adj=1, cex=0.8)
+  }
+  text(0.9, 0.64, theta_hat, adj=1, cex=0.8)
+  text(0.7, 0.64, "Overall", adj=1, cex=0.8)
+  
+}
+draw_funnel()
+arrows(0.7, 0.08, b$y[1], b$se[1], length=0.05, col="red")
+d <- 0.365
+arrows(-0.44-2*d, d, -0.44+2*d, d, length=0.05, col="red", code=3)
+text(-0.44-2*d-0.02, d, paste0("+/-2*", d), adj=1, col="red", cex=0.8)
+```
+
+The center line is the overall estimate.
 
 ```{r save-everything, results=FALSE}
 save.image(file="../data/calculations.RData")
